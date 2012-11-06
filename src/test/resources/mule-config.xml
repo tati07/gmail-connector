@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:gmail="http://www.mulesoft.org/schema/mule/gmail"
+      xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/gmail http://www.mulesoft.org/schema/mule/gmail/1.0-SNAPSHOT/mule-gmail.xsd">
+
+    <gmail:config name="gmail"/>
+
+    <flow name="testFlow">
+        <gmail:get-messages config-ref="gmail" folder="Inbox">
+        	<gmail:from-addresses>
+        		<gmail:from-address>a@mulesoft.com</gmail:from-address>
+        		<gmail:from-address>b@mulesoft.com</gmail:from-address>
+        	</gmail:from-addresses>
+        	<gmail:to-addresses>
+        		<gmail:to-address>c@mulesoft.com</gmail:to-address>
+        		<gmail:to-address>d@mulesoft.com</gmail:to-address>
+        	</gmail:to-addresses>
+        	<gmail:size operator="GT" value="0" />
+        	<gmail:flags>
+        		<gmail:flag set="true" flag="SEEN" />
+        	</gmail:flags>
+        	<gmail:labels>
+        		<gmail:label>labelA</gmail:label>
+        		<gmail:label>labelB</gmail:label>
+        	</gmail:labels>
+        	<gmail:raw-search-terms>
+        		<gmail:raw-search-term>term1</gmail:raw-search-term>
+        		<gmail:raw-search-term>term2</gmail:raw-search-term>
+        	</gmail:raw-search-terms>
+        </gmail:get-messages>
+    </flow>
+
+</mule>
