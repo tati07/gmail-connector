@@ -1,28 +1,23 @@
-/* Copyright 2012 Google Inc.
+/**
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) MuleSoft, Inc.  All rights reserved.  http://www.mulesoft.com
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.txt file.
  */
 
 package com.google.code.oauth;
 
-import java.security.Provider;
 import java.security.Security;
 import java.util.Properties;
-import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.google.code.com.sun.mail.imap.IMAPSSLStore;
 import com.google.code.com.sun.mail.imap.IMAPStore;
 import com.google.code.com.sun.mail.smtp.SMTPTransport;
+import com.google.code.javax.mail.MessagingException;
 import com.google.code.javax.mail.Session;
 import com.google.code.javax.mail.URLName;
 
@@ -34,58 +29,32 @@ import com.google.code.javax.mail.URLName;
  * OAuth2 SASL provider.
  */
 public class OAuth2Authenticator {
-  private static final Logger logger =
-      Logger.getLogger(OAuth2Authenticator.class.getName());
-
-  public static final class OAuth2Provider extends Provider {
-    private static final long serialVersionUID = 1L;
-
-    public OAuth2Provider() {
-      super("Google OAuth2 Provider", 1.0,
-            "Provides the XOAUTH2 SASL Mechanism");
-      put("SaslClientFactory.XOAUTH2",
-          "com.google.code.samples.oauth2.OAuth2SaslClientFactory");
-    }
-  }
-
+  
   /**
    * Installs the OAuth2 SASL provider. This must be called exactly once before
    * calling other methods on this class.
    */
   public static void initialize() {
-    Security.addProvider(new OAuth2Provider());
+	  Security.addProvider(new OAuth2Provider());
   }
 
   /**
-   * Connects and authenticates to an IMAP server with OAuth2. You must have
-   * called {@code initialize}.
+   * Connects and authenticates to an IMAP server with OAuth2. You must have called {@code initialize}.
    *
-   * @param host Hostname of the imap server, for example {@code
-   *     imap.googlemail.com}.
-   * @param port Port of the imap server, for example 993.
-   * @param userEmail Email address of the user to authenticate, for example
-   *     {@code oauth@gmail.com}.
+   * @param userEmail Email address of the user to authenticate, for example {@code oauth@gmail.com}.
    * @param oauthToken The user's OAuth token.
-   * @param debug Whether to enable debug logging on the IMAP connection.
    *
    * @return An authenticated IMAPStore that can be used for IMAP operations.
    */
-  public static IMAPStore connectToImap(String host,
-                                        int port,
-                                        String userEmail,
-                                        String oauthToken,
-                                        boolean debug) throws Exception {
+  public static IMAPStore connectToImap(String userEmail, String oauthToken) throws MessagingException {
     Properties props = new Properties();
     props.put("mail.imaps.sasl.enable", "true");
     props.put("mail.imaps.sasl.mechanisms", "XOAUTH2");
     props.put(OAuth2SaslClientFactory.OAUTH_TOKEN_PROP, oauthToken);
     Session session = Session.getInstance(props);
-    session.setDebug(debug);
 
-    final URLName unusedUrlName = null;
-    IMAPSSLStore store = new IMAPSSLStore(session, unusedUrlName);
-    final String emptyPassword = "";
-    store.connect(host, port, userEmail, emptyPassword);
+    IMAPSSLStore store = new IMAPSSLStore(session, null);
+    store.connect("imap.gmail.com", 993, userEmail, StringUtils.EMPTY);
     return store;
   }
 
@@ -127,31 +96,4 @@ public class OAuth2Authenticator {
     return transport;
   }
 
-  /**
-   * Authenticates to IMAP with parameters passed in on the commandline.
-   */
-  public static void main(String args[]) throws Exception {
-    if (args.length != 2) {
-      System.err.println(
-          "Usage: OAuth2Authenticator <email> <oauthToken>");
-      return;
-    }
-    String email = args[0];
-    String oauthToken = args[1];
-
-    initialize();
-
-    IMAPStore imapStore = connectToImap("imap.gmail.com",
-                                        993,
-                                        email,
-                                        oauthToken,
-                                        true);
-    System.out.println("Successfully authenticated to IMAP.\n");
-    SMTPTransport smtpTransport = connectToSmtp("smtp.gmail.com",
-                                                587,
-                                                email,
-                                                oauthToken,
-                                                true);
-    System.out.println("Successfully authenticated to SMTP.");
-  }
 }

@@ -1,41 +1,10 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+/**
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) MuleSoft, Inc.  All rights reserved.  http://www.mulesoft.com
  *
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License.  You can
- * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
- * or packager/legal/LICENSE.txt.  See the License for the specific
- * language governing permissions and limitations under the License.
- *
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at packager/legal/LICENSE.txt.
- *
- * GPL Classpath Exception:
- * Oracle designates this particular file as subject to the "Classpath"
- * exception as provided by Oracle in the GPL Version 2 section of the License
- * file that accompanied this code.
- *
- * Modifications:
- * If applicable, add the following below the License Header, with the fields
- * enclosed by brackets [] replaced by your own identifying information:
- * "Portions Copyright [year] [name of copyright owner]"
- *
- * Contributor(s):
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.txt file.
  */
 
 package com.google.code.javax.mail.event;
@@ -43,13 +12,13 @@ package com.google.code.javax.mail.event;
 import com.google.code.javax.mail.Folder;
 
 /**
- * This class models Folder <em>existence</em> events. FolderEvents are
- * delivered to FolderListeners registered on the affected Folder as
+ * This class models GmailFolder <em>existence</em> events. FolderEvents are
+ * delivered to FolderListeners registered on the affected GmailFolder as
  * well as the containing Store. <p>
  *
  * Service providers vary widely in their ability to notify clients of
  * these events.  At a minimum, service providers must notify listeners
- * registered on the same Store or Folder object on which the operation
+ * registered on the same Store or GmailFolder object on which the operation
  * occurs.  Service providers may also notify listeners when changes
  * are made through operations on other objects in the same virtual
  * machine, or by other clients in the same or other hosts.  Such
@@ -139,12 +108,12 @@ public class FolderEvent extends MailEvent {
 
     /**
      * If this event indicates that a folder is renamed, (i.e, the event type
-     * is RENAMED), then this method returns the Folder object representing the
+     * is RENAMED), then this method returns the GmailFolder object representing the
      * new name. <p>
      *
      * The <code>getFolder()</code> method returns the folder that is renamed.
      *
-     * @return		Folder representing the new name.
+     * @return		GmailFolder representing the new name.
      * @see		#getFolder
      * @since		JavaMail 1.1
      */

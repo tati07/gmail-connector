@@ -1,41 +1,10 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+/**
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) MuleSoft, Inc.  All rights reserved.  http://www.mulesoft.com
  *
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License.  You can
- * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
- * or packager/legal/LICENSE.txt.  See the License for the specific
- * language governing permissions and limitations under the License.
- *
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at packager/legal/LICENSE.txt.
- *
- * GPL Classpath Exception:
- * Oracle designates this particular file as subject to the "Classpath"
- * exception as provided by Oracle in the GPL Version 2 section of the License
- * file that accompanied this code.
- *
- * Modifications:
- * If applicable, add the following below the License Header, with the fields
- * enclosed by brackets [] replaced by your own identifying information:
- * "Portions Copyright [year] [name of copyright owner]"
- *
- * Contributor(s):
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.txt file.
  */
 
 package com.google.code.com.sun.mail.imap;
@@ -109,7 +78,7 @@ import com.google.code.javax.mail.event.StoreEvent;
  * Note that all connections in the connection pool have their response
  * handler set to be the Store.  When the connection is removed from the
  * pool for use by a folder, the response handler is removed and then set
- * to either the Folder or to the special nonStoreResponseHandler, depending
+ * to either the GmailFolder or to the special nonStoreResponseHandler, depending
  * on how the connection is being used.  This is probably excessive.
  * Better would be for the Protocol object to support only a single
  * response handler, which would be set before the connection is used
@@ -153,12 +122,12 @@ import com.google.code.javax.mail.event.StoreEvent;
  * all three locks, but if you hold more than one this is the order you
  * have to acquire them in. <p>
  *
- * That is: Store > Folder, Folder > pool, Store > pool <p>
+ * That is: Store > GmailFolder, GmailFolder > pool, Store > pool <p>
  *
  * The IMAPStore implements the ResponseHandler interface and listens to
  * BYE or untagged OK-notification events from the server as a result of
  * Store operations.  IMAPFolder forwards notifications that result from
- * Folder operations using the store connection; the IMAPStore ResponseHandler
+ * GmailFolder operations using the store connection; the IMAPStore ResponseHandler
  * is not used directly in this case. <p>
  */
 
@@ -776,7 +745,7 @@ public class IMAPStore extends Store
     /**
      * Set the user name that will be used for subsequent connections
      * after this Store is first connected (for example, when creating
-     * a connection to open a Folder).  This value is overridden
+     * a connection to open a GmailFolder).  This value is overridden
      * by any call to the Store's connect method. <p>
      *
      * Some IMAP servers may provide an authentication ID that can
@@ -795,7 +764,7 @@ public class IMAPStore extends Store
     /**
      * Set the password that will be used for subsequent connections
      * after this Store is first connected (for example, when creating
-     * a connection to open a Folder).  This value is overridden
+     * a connection to open a GmailFolder).  This value is overridden
      * by any call to the Store's connect method. <p>
      *
      * Most applications will never need to use this method.
@@ -807,7 +776,7 @@ public class IMAPStore extends Store
     }
 
     /*
-     * Get a new authenticated protocol object for this Folder.
+     * Get a new authenticated protocol object for this GmailFolder.
      * Also store a reference to this folder in our list of
      * open folders.
      */

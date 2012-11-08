@@ -1,41 +1,10 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+/**
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) MuleSoft, Inc.  All rights reserved.  http://www.mulesoft.com
  *
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License.  You can
- * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
- * or packager/legal/LICENSE.txt.  See the License for the specific
- * language governing permissions and limitations under the License.
- *
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at packager/legal/LICENSE.txt.
- *
- * GPL Classpath Exception:
- * Oracle designates this particular file as subject to the "Classpath"
- * exception as provided by Oracle in the GPL Version 2 section of the License
- * file that accompanied this code.
- *
- * Modifications:
- * If applicable, add the following below the License Header, with the fields
- * enclosed by brackets [] replaced by your own identifying information:
- * "Portions Copyright [year] [name of copyright owner]"
- *
- * Contributor(s):
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.txt file.
  */
 
 package com.google.code.javax.mail;
@@ -54,13 +23,13 @@ import com.google.code.javax.mail.event.MessageCountListener;
 import com.google.code.javax.mail.search.SearchTerm;
 
 /**
- * Folder is an abstract class that represents a folder for mail
+ * GmailFolder is an abstract class that represents a folder for mail
  * messages. Subclasses implement protocol specific Folders.<p>
  *
  * Folders can contain Messages, other Folders or both, thus providing
  * a tree-like hierarchy rooted at the Store's default folder. (Note 
- * that some Folder implementations may not allow both Messages and 
- * other Folders in the same Folder).<p>
+ * that some GmailFolder implementations may not allow both Messages and 
+ * other Folders in the same GmailFolder).<p>
  *
  * The interpretation of folder names is implementation dependent.
  * The different levels of hierarchy in a folder's full name
@@ -75,38 +44,38 @@ import com.google.code.javax.mail.search.SearchTerm;
  * <strong>INBOX</strong> is reserved to refer to this folder,
  * when it exists, in Stores that provide it. <p>
  *
- * A Folder object obtained from a Store need not actually exist
+ * A GmailFolder object obtained from a Store need not actually exist
  * in the backend store. The <code>exists</code> method tests whether
  * the folder exists or not. The <code>create</code> method
- * creates a Folder. <p>
+ * creates a GmailFolder. <p>
  *
- * A Folder is initially in the closed state. Certain methods are valid
+ * A GmailFolder is initially in the closed state. Certain methods are valid
  * in this state; the documentation for those methods note this.  A
- * Folder is opened by calling its 'open' method. All Folder methods,
+ * GmailFolder is opened by calling its 'open' method. All GmailFolder methods,
  * except <code>open</code>, <code>delete</code> and 
  * <code>renameTo</code>, are valid in this state. <p>
  *
- * The only way to get a Folder is by invoking the 
- * <code>getFolder</code> method on Store, Folder, or Session, or by invoking 
+ * The only way to get a GmailFolder is by invoking the 
+ * <code>getFolder</code> method on Store, GmailFolder, or Session, or by invoking 
  * the <code>list</code> or <code>listSubscribed</code> methods 
- * on Folder. Folder objects returned by the above methods are not 
+ * on GmailFolder. GmailFolder objects returned by the above methods are not 
  * cached by the Store. Thus, invoking the <code>getFolder</code> method
- * with the same folder name multiple times will return distinct Folder 
+ * with the same folder name multiple times will return distinct GmailFolder 
  * objects.  Likewise for the <code>list</code> and <code>listSubscribed</code>
  * methods. <p>
  *
- * The Message objects within the Folder are cached by the Folder.
+ * The Message objects within the GmailFolder are cached by the GmailFolder.
  * Thus, invoking <code>getMessage(msgno)</code> on the same message number
  * multiple times will return the same Message object, until an 
- * expunge is done on this Folder. <p>
+ * expunge is done on this GmailFolder. <p>
  *
- * Message objects from a Folder are only valid while a Folder is open
- * and should not be accessed after the Folder is closed, even if the
- * Folder is subsequently reopened.  Instead, new Message objects must
- * be fetched from the Folder after the Folder is reopened. <p>
+ * Message objects from a GmailFolder are only valid while a GmailFolder is open
+ * and should not be accessed after the GmailFolder is closed, even if the
+ * GmailFolder is subsequently reopened.  Instead, new Message objects must
+ * be fetched from the GmailFolder after the GmailFolder is reopened. <p>
  *
  * Note that a Message's message number can change within a
- * session if the containing Folder is expunged using the expunge
+ * session if the containing GmailFolder is expunged using the expunge
  * method.  Clients that use message numbers as references to messages
  * should be aware of this and should be prepared to deal with 
  * situation (probably by flushing out existing message number references
@@ -129,7 +98,7 @@ public abstract class Folder {
 
     /**
      * The open mode of this folder.  The open mode is
-     * <code>Folder.READ_ONLY</code>, <code>Folder.READ_WRITE</code>,
+     * <code>GmailFolder.READ_ONLY</code>, <code>GmailFolder.READ_WRITE</code>,
      * or -1 if not known.
      * @since	JavaMail 1.1
      */
@@ -145,23 +114,23 @@ public abstract class Folder {
     }
 
     /**
-     * Returns the name of this Folder. <p>
+     * Returns the name of this GmailFolder. <p>
      *
-     * This method can be invoked on a closed Folder.
+     * This method can be invoked on a closed GmailFolder.
      *
-     * @return		name of the Folder
+     * @return		name of the GmailFolder
      */
     public abstract String getName();
 
     /**
-     * Returns the full name of this Folder. If the folder resides under
+     * Returns the full name of this GmailFolder. If the folder resides under
      * the root hierarchy of this Store, the returned name is relative
      * to the root. Otherwise an absolute name, starting with the 
      * hierarchy delimiter, is returned. <p>
      *
-     * This method can be invoked on a closed Folder.
+     * This method can be invoked on a closed GmailFolder.
      *
-     * @return		full name of the Folder
+     * @return		full name of the GmailFolder
      */
     public abstract String getFullName();
 
@@ -210,8 +179,8 @@ public abstract class Folder {
     }
 
     /**
-     * Returns the Store that owns this Folder object.
-     * This method can be invoked on a closed Folder.
+     * Returns the Store that owns this GmailFolder object.
+     * This method can be invoked on a closed GmailFolder.
      * @return 		the Store
      */
     public Store getStore() {
@@ -220,11 +189,11 @@ public abstract class Folder {
 
     /**
      * Returns the parent folder of this folder.
-     * This method can be invoked on a closed Folder. If this folder
+     * This method can be invoked on a closed GmailFolder. If this folder
      * is the top of a folder hierarchy, this method returns null. <p>
      *
-     * Note that since Folder objects are not cached, invoking this method
-     * returns a new distinct Folder object.
+     * Note that since GmailFolder objects are not cached, invoking this method
+     * returns a new distinct GmailFolder object.
      *
      * @return		Parent folder
      */
@@ -232,7 +201,7 @@ public abstract class Folder {
 
     /**
      * Tests if this folder physically exists on the Store.
-     * This method can be invoked on a closed Folder.
+     * This method can be invoked on a closed GmailFolder.
      *
      * @return true if the folder exists, otherwise false
      * @see    #create
@@ -242,7 +211,7 @@ public abstract class Folder {
     public abstract boolean exists() throws MessagingException;
 
     /**
-     * Returns a list of Folders belonging to this Folder's namespace
+     * Returns a list of Folders belonging to this GmailFolder's namespace
      * that match the specified pattern. Patterns may contain the wildcard
      * characters <code>"%"</code>, which matches any character except hierarchy
      * delimiters, and <code>"*"</code>, which matches any character. <p>
@@ -263,14 +232,14 @@ public abstract class Folder {
      * <code>list("Stock*")</code> on "Finance" will return "Stocks"
      * and "StockOptions". <p>
      *
-     * Folder objects are not cached by the Store, so invoking this
+     * GmailFolder objects are not cached by the Store, so invoking this
      * method on the same pattern multiple times will return that many
-     * distinct Folder objects. <p>
+     * distinct GmailFolder objects. <p>
      *
-     * This method can be invoked on a closed Folder.
+     * This method can be invoked on a closed GmailFolder.
      *
      * @param pattern	the match pattern
-     * @return		array of matching Folder objects. An empty
+     * @return		array of matching GmailFolder objects. An empty
      *			array is returned if no matching Folders exist.
      * @see 		#listSubscribed
      * @exception 	FolderNotFoundException if this folder does 
@@ -280,7 +249,7 @@ public abstract class Folder {
     public abstract Folder[] list(String pattern) throws MessagingException;
 
     /**
-     * Returns a list of subscribed Folders belonging to this Folder's
+     * Returns a list of subscribed Folders belonging to this GmailFolder's
      * namespace that match the specified pattern. If the folder does
      * not support subscription, this method should resolve to
      * <code>list</code>.
@@ -295,14 +264,14 @@ public abstract class Folder {
      * subscribed.  The <code>isSubscribed</code> method on a folder will
      * tell whether any particular folder is actually subscribed. <p>
      *
-     * Folder objects are not cached by the Store, so invoking this
+     * GmailFolder objects are not cached by the Store, so invoking this
      * method on the same pattern multiple times will return that many
-     * distinct Folder objects. <p>
+     * distinct GmailFolder objects. <p>
      *
-     * This method can be invoked on a closed Folder.
+     * This method can be invoked on a closed GmailFolder.
      *
      * @param pattern	the match pattern
-     * @return		array of matching subscribed Folder objects. An
+     * @return		array of matching subscribed GmailFolder objects. An
      *			empty array is returned if no matching
      *			subscribed folders exist.
      * @see 		#list
@@ -322,11 +291,11 @@ public abstract class Folder {
     
     /**
      * Convenience method that returns the list of folders under this
-     * Folder. This method just calls the <code>list(String pattern)</code>
+     * GmailFolder. This method just calls the <code>list(String pattern)</code>
      * method with <code>"%"</code> as the match pattern. This method can
-     * be invoked on a closed Folder.
+     * be invoked on a closed GmailFolder.
      *
-     * @return		array of Folder objects under this Folder. An
+     * @return		array of GmailFolder objects under this GmailFolder. An
      *			empty array is returned if no subfolders exist.
      * @see		#list
      * @exception 	FolderNotFoundException if this folder does
@@ -340,12 +309,12 @@ public abstract class Folder {
 
     /**
      * Convenience method that returns the list of subscribed folders 
-     * under this Folder. This method just calls the
+     * under this GmailFolder. This method just calls the
      * <code>listSubscribed(String pattern)</code> method with <code>"%"</code>
-     * as the match pattern. This method can be invoked on a closed Folder.
+     * as the match pattern. This method can be invoked on a closed GmailFolder.
      *
-     * @return		array of subscribed Folder objects under this 
-     *			Folder. An empty array is returned if no subscribed 
+     * @return		array of subscribed GmailFolder objects under this 
+     *			GmailFolder. An empty array is returned if no subscribed 
      *			subfolders exist.
      * @see		#listSubscribed
      * @exception 	FolderNotFoundException if this folder does
@@ -357,9 +326,9 @@ public abstract class Folder {
     }
 
     /**
-     * Return the delimiter character that separates this Folder's pathname
+     * Return the delimiter character that separates this GmailFolder's pathname
      * from the names of immediate subfolders. This method can be invoked 
-     * on a closed Folder.
+     * on a closed GmailFolder.
      *
      * @exception 	FolderNotFoundException if the implementation
      *			requires the folder to exist, but it does not
@@ -378,7 +347,7 @@ public abstract class Folder {
     public final static int HOLDS_FOLDERS  = 0x02;
 
     /**
-     * Returns the type of this Folder, that is, whether this folder can hold
+     * Returns the type of this GmailFolder, that is, whether this folder can hold
      * messages or subfolders or both. The returned value is an integer
      * bitfield with the appropriate bits set. This method can be invoked
      * on a closed folder.
@@ -396,7 +365,7 @@ public abstract class Folder {
      * folders in its path that do not exist are also created. <p>
      *
      * If the creation is successful, a CREATED FolderEvent is delivered
-     * to any FolderListeners registered on this Folder and this Store.
+     * to any FolderListeners registered on this GmailFolder and this Store.
      *
      * @param  type	The type of this folder. 
      *
@@ -409,23 +378,23 @@ public abstract class Folder {
     public abstract boolean create(int type) throws MessagingException;
 
     /**
-     * Returns true if this Folder is subscribed. <p>
+     * Returns true if this GmailFolder is subscribed. <p>
      *
-     * This method can be invoked on a closed Folder. <p>
+     * This method can be invoked on a closed GmailFolder. <p>
      *
      * The default implementation provided here just returns true.
      *
-     * @return		true if this Folder is subscribed
+     * @return		true if this GmailFolder is subscribed
      */
     public boolean isSubscribed() {
 	return true;
     }
 
     /**
-     * Subscribe or unsubscribe this Folder. Not all Stores support
+     * Subscribe or unsubscribe this GmailFolder. Not all Stores support
      * subscription. <p>
      *
-     * This method can be invoked on a closed Folder. <p>
+     * This method can be invoked on a closed GmailFolder. <p>
      *
      * The implementation provided here just throws the
      * MethodNotSupportedException.
@@ -443,21 +412,21 @@ public abstract class Folder {
     }
 
     /**
-     * Returns true if this Folder has new messages since the last time
+     * Returns true if this GmailFolder has new messages since the last time
      * this indication was reset.  When this indication is set or reset
-     * depends on the Folder implementation (and in the case of IMAP,
+     * depends on the GmailFolder implementation (and in the case of IMAP,
      * depends on the server).  This method can be used to implement
-     * a lightweight "check for new mail" operation on a Folder without
+     * a lightweight "check for new mail" operation on a GmailFolder without
      * opening it.  (For example, a thread that monitors a mailbox and
      * flags when it has new mail.)  This method should indicate whether
-     * any messages in the Folder have the <code>RECENT</code> flag set. <p>
+     * any messages in the GmailFolder have the <code>RECENT</code> flag set. <p>
      *
      * Note that this is not an incremental check for new mail, i.e.,
      * it cannot be used to determine whether any new messages have
      * arrived since the last time this method was invoked. To
-     * implement incremental checks, the Folder needs to be opened. <p>
+     * implement incremental checks, the GmailFolder needs to be opened. <p>
      *
-     * This method can be invoked on a closed Folder that can contain
+     * This method can be invoked on a closed GmailFolder that can contain
      * Messages.
      *
      * @return		true if the Store has new Messages
@@ -468,31 +437,31 @@ public abstract class Folder {
     public abstract boolean hasNewMessages() throws MessagingException;
 
     /**
-     * Return the Folder object corresponding to the given name. Note that
+     * Return the GmailFolder object corresponding to the given name. Note that
      * this folder does not physically have to exist in the Store. The
-     * <code>exists()</code> method on a Folder indicates whether it really
+     * <code>exists()</code> method on a GmailFolder indicates whether it really
      * exists on the Store. <p>
      *
      * In some Stores, name can be an absolute path if it starts with the
      * hierarchy delimiter.  Otherwise, it is interpreted relative to
-     * this Folder. <p>
+     * this GmailFolder. <p>
      *
-     * Folder objects are not cached by the Store, so invoking this
+     * GmailFolder objects are not cached by the Store, so invoking this
      * method on the same name multiple times will return that many
-     * distinct Folder objects. <p>
+     * distinct GmailFolder objects. <p>
      *
-     * This method can be invoked on a closed Folder.
+     * This method can be invoked on a closed GmailFolder.
      *
-     * @param name 	name of the Folder
-     * @return		Folder object
+     * @param name 	name of the GmailFolder
+     * @return		GmailFolder object
      * @exception 	MessagingException
      */
     public abstract Folder getFolder(String name)
 				throws MessagingException;
 
     /**
-     * Delete this Folder. This method will succeed only on a closed
-     * Folder. <p>
+     * Delete this GmailFolder. This method will succeed only on a closed
+     * GmailFolder. <p>
      *
      * The <code>recurse</code> flag controls whether the deletion affects
      * subfolders or not. If true, all subfolders are deleted, then this
@@ -550,7 +519,7 @@ public abstract class Folder {
      * </ol>
      * </ul>
      *
-     * @return		true if the Folder is deleted successfully
+     * @return		true if the GmailFolder is deleted successfully
      * @exception	FolderNotFoundException if this folder does 
      *			not exist
      * @exception	IllegalStateException if this folder is not in 
@@ -562,15 +531,15 @@ public abstract class Folder {
 				throws MessagingException;
 
     /**
-     * Rename this Folder. This method will succeed only on a closed
-     * Folder. <p>
+     * Rename this GmailFolder. This method will succeed only on a closed
+     * GmailFolder. <p>
      *
      * If the rename is successful, a RENAMED FolderEvent is delivered
      * to FolderListeners registered on this folder and its containing
      * Store.
      *
-     * @param f		a folder representing the new name for this Folder
-     * @return		true if the Folder is renamed successfully
+     * @param f		a folder representing the new name for this GmailFolder
+     * @return		true if the GmailFolder is renamed successfully
      * @exception	FolderNotFoundException if this folder does 
      *			not exist
      * @exception	IllegalStateException if this folder is not in 
@@ -581,7 +550,7 @@ public abstract class Folder {
     public abstract boolean renameTo(Folder f) throws MessagingException;
 
     /**
-     * The Folder is read only.  The state and contents of this
+     * The GmailFolder is read only.  The state and contents of this
      * folder cannot be modified.
      */
     public static final int READ_ONLY 	= 1;
@@ -592,19 +561,19 @@ public abstract class Folder {
     public static final int READ_WRITE 	= 2;
 
     /**
-     * Open this Folder. This method is valid only on Folders that
+     * Open this GmailFolder. This method is valid only on Folders that
      * can contain Messages and that are closed. <p>
      *
      * If this folder is opened successfully, an OPENED ConnectionEvent
      * is delivered to any ConnectionListeners registered on this 
-     * Folder. <p>
+     * GmailFolder. <p>
      *
      * The effect of opening multiple connections to the same folder
      * on a specifc Store is implementation dependent. Some implementations
      * allow multiple readers, but only one writer. Others allow
      * multiple writers as well as readers.
      *
-     * @param mode	open the Folder READ_ONLY or READ_WRITE
+     * @param mode	open the GmailFolder READ_ONLY or READ_WRITE
      * @exception	FolderNotFoundException if this folder does 
      *			not exist.
      * @exception	IllegalStateException if this folder is not in 
@@ -618,10 +587,10 @@ public abstract class Folder {
     public abstract void open(int mode) throws MessagingException;
 
     /**
-     * Close this Folder. This method is valid only on open Folders. <p>
+     * Close this GmailFolder. This method is valid only on open Folders. <p>
      *
      * A CLOSED ConnectionEvent is delivered to any ConnectionListeners
-     * registered on this Folder. Note that the folder is closed even
+     * registered on this GmailFolder. Note that the folder is closed even
      * if this method terminates abnormally by throwing a
      * MessagingException.
      *
@@ -633,16 +602,16 @@ public abstract class Folder {
     public abstract void close(boolean expunge) throws MessagingException;
 
     /**
-     * Indicates whether this Folder is in the 'open' state.
-     * @return  true if this Folder is in the 'open' state.
+     * Indicates whether this GmailFolder is in the 'open' state.
+     * @return  true if this GmailFolder is in the 'open' state.
      */
     public abstract boolean isOpen();
 
     /**
      * Return the open mode of this folder.  Returns
-     * <code>Folder.READ_ONLY</code>, <code>Folder.READ_WRITE</code>,
+     * <code>GmailFolder.READ_ONLY</code>, <code>GmailFolder.READ_WRITE</code>,
      * or -1 if the open mode is not known (usually only because an older
-     * <code>Folder</code> provider has not been updated to use this new
+     * <code>GmailFolder</code> provider has not been updated to use this new
      * method).
      *
      * @exception	IllegalStateException if this folder is not opened
@@ -651,15 +620,15 @@ public abstract class Folder {
      */
     public int getMode() {
 	if (!isOpen())
-	    throw new IllegalStateException("Folder not open");
+	    throw new IllegalStateException("GmailFolder not open");
 	return mode;
     }
  
     /**
-     * Get the permanent flags supported by this Folder. Returns a Flags
+     * Get the permanent flags supported by this GmailFolder. Returns a Flags
      * object that contains all the flags supported. <p>
      *
-     * The special flag <code>Flags.Flag.USER </code> indicates that this Folder
+     * The special flag <code>Flags.Flag.USER </code> indicates that this GmailFolder
      * supports arbitrary user-defined flags. <p>
      *
      * The supported permanent flags for a folder may not be available
@@ -670,7 +639,7 @@ public abstract class Folder {
     public abstract Flags getPermanentFlags();
 
     /**
-     * Get total number of messages in this Folder. <p>
+     * Get total number of messages in this GmailFolder. <p>
      *
      * This method can be invoked on a closed folder. However, note
      * that for some folder implementations, getting the total message
@@ -693,7 +662,7 @@ public abstract class Folder {
     public abstract int getMessageCount() throws MessagingException;
 
     /**
-     * Get the number of new messages in this Folder. <p>
+     * Get the number of new messages in this GmailFolder. <p>
      *
      * This method can be invoked on a closed folder. However, note
      * that for some folder implementations, getting the new message
@@ -739,7 +708,7 @@ public abstract class Folder {
     }
 
     /**
-     * Get the total number of unread messages in this Folder. <p>
+     * Get the total number of unread messages in this GmailFolder. <p>
      *
      * This method can be invoked on a closed folder. However, note
      * that for some folder implementations, getting the unread message
@@ -785,7 +754,7 @@ public abstract class Folder {
     }
 
     /**
-     * Get the number of deleted messages in this Folder. <p>
+     * Get the number of deleted messages in this GmailFolder. <p>
      *
      * This method can be invoked on a closed folder. However, note
      * that for some folder implementations, getting the deleted message
@@ -833,17 +802,17 @@ public abstract class Folder {
     /**
      * Get the Message object corresponding to the given message
      * number.  A Message object's message number is the relative
-     * position of this Message in its Folder. Messages are numbered
+     * position of this Message in its GmailFolder. Messages are numbered
      * starting at 1 through the total number of message in the folder.
      * Note that the message number for a particular Message can change
-     * during a session if other messages in the Folder are deleted and
-     * the Folder is expunged. <p>
+     * during a session if other messages in the GmailFolder are deleted and
+     * the GmailFolder is expunged. <p>
      *
      * Message objects are light-weight references to the actual message
-     * that get filled up on demand. Hence Folder implementations are 
+     * that get filled up on demand. Hence GmailFolder implementations are 
      * expected to provide light-weight Message objects. <p>
      *
-     * Unlike Folder objects, repeated calls to getMessage with the
+     * Unlike GmailFolder objects, repeated calls to getMessage with the
      * same message number will return the same Message object, as
      * long as no messages in this folder have been expunged. <p>
      *
@@ -871,7 +840,7 @@ public abstract class Folder {
      * numbers start at 1, not 0. <p>
      *
      * Message objects are light-weight references to the actual message
-     * that get filled up on demand. Hence Folder implementations are 
+     * that get filled up on demand. Hence GmailFolder implementations are 
      * expected to provide light-weight Message objects. <p>
      *
      * This implementation uses getMessage(index) to obtain the required
@@ -902,7 +871,7 @@ public abstract class Folder {
      * the array. <p>
      *
      * Message objects are light-weight references to the actual message
-     * that get filled up on demand. Hence Folder implementations are 
+     * that get filled up on demand. Hence GmailFolder implementations are 
      * expected to provide light-weight Message objects. <p>
      *
      * This implementation uses getMessage(index) to obtain the required
@@ -929,12 +898,12 @@ public abstract class Folder {
     }
 
     /**
-     * Get all Message objects from this Folder. Returns an empty array
+     * Get all Message objects from this GmailFolder. Returns an empty array
      * if the folder is empty.
      *
      * Clients can use Message objects (instead of sequence numbers) 
      * as references to the messages within a folder; this method supplies 
-     * the Message objects to the client. Folder implementations are 
+     * the Message objects to the client. GmailFolder implementations are 
      * expected to provide light-weight Message objects, which get
      * filled on demand. <p>
      *
@@ -952,7 +921,7 @@ public abstract class Folder {
      */ 
     public synchronized Message[] getMessages() throws MessagingException {
 	if (!isOpen())	// otherwise getMessageCount might return -1
-	    throw new IllegalStateException("Folder not open");
+	    throw new IllegalStateException("GmailFolder not open");
 	int total = getMessageCount();
 	Message[] msgs = new Message[total];
 	for (int i = 1; i <= total; i++)
@@ -962,11 +931,11 @@ public abstract class Folder {
 
     /**
      * Append given Messages to this folder. This method can be 
-     * invoked on a closed Folder. An appropriate MessageCountEvent 
+     * invoked on a closed GmailFolder. An appropriate MessageCountEvent 
      * is delivered to any MessageCountListener registered on this 
      * folder when the messages arrive in the folder. <p>
      *
-     * Folder implementations must not abort this operation if a
+     * GmailFolder implementations must not abort this operation if a
      * Message in the given message array turns out to be an
      * expunged Message.
      *
@@ -1029,13 +998,13 @@ public abstract class Folder {
      * Message's containing folder. <p>
      *
      * Note that the specified Message objects <strong>must</strong> 
-     * belong to this folder. Certain Folder implementations can
+     * belong to this folder. Certain GmailFolder implementations can
      * optimize the operation of setting Flags for a group of messages,
      * so clients might want to use this method, rather than invoking
      * <code>Message.setFlags</code> for each Message. <p>
      *
      * This implementation degenerates to invoking <code>setFlags()</code>
-     * on each Message object. Specific Folder implementations that can 
+     * on each Message object. Specific GmailFolder implementations that can 
      * optimize this case should do so. 
      * Also, an implementation must not abort the operation if a Message 
      * in the array turns out to be an expunged Message.
@@ -1068,7 +1037,7 @@ public abstract class Folder {
      * delivered to any MessageChangedListener registered on this
      * Message's containing folder. <p>
      *
-     * Certain Folder implementations can
+     * Certain GmailFolder implementations can
      * optimize the operation of setting Flags for a group of messages,
      * so clients might want to use this method, rather than invoking
      * <code>Message.setFlags</code> for each Message. <p>
@@ -1076,7 +1045,7 @@ public abstract class Folder {
      * The default implementation uses <code>getMessage(int)</code> to
      * get each <code>Message</code> object and then invokes
      * <code>setFlags</code> on that object to set the flags.
-     * Specific Folder implementations that can optimize this case should do so.
+     * Specific GmailFolder implementations that can optimize this case should do so.
      * Also, an implementation must not abort the operation if a message 
      * number refers to an expunged message.
      *
@@ -1111,7 +1080,7 @@ public abstract class Folder {
      * delivered to any MessageChangedListener registered on this
      * Message's containing folder. <p>
      *
-     * Certain Folder implementations can
+     * Certain GmailFolder implementations can
      * optimize the operation of setting Flags for a group of messages,
      * so clients might want to use this method, rather than invoking
      * <code>Message.setFlags</code> for each Message. <p>
@@ -1119,7 +1088,7 @@ public abstract class Folder {
      * The default implementation uses <code>getMessage(int)</code> to
      * get each <code>Message</code> object and then invokes
      * <code>setFlags</code> on that object to set the flags.
-     * Specific Folder implementations that can optimize this case should do so.
+     * Specific GmailFolder implementations that can optimize this case should do so.
      * Also, an implementation must not abort the operation if a message 
      * number refers to an expunged message.
      *
@@ -1147,15 +1116,15 @@ public abstract class Folder {
     }
 
     /**
-     * Copy the specified Messages from this Folder into another 
-     * Folder. This operation appends these Messages to the 
-     * destination Folder. The destination Folder does not have to 
+     * Copy the specified Messages from this GmailFolder into another 
+     * GmailFolder. This operation appends these Messages to the 
+     * destination GmailFolder. The destination GmailFolder does not have to 
      * be opened.  An appropriate MessageCountEvent 
      * is delivered to any MessageCountListener registered on the 
      * destination folder when the messages arrive in the folder. <p>
      *
      * Note that the specified Message objects <strong>must</strong> 
-     * belong to this folder. Folder implementations might be able
+     * belong to this folder. GmailFolder implementations might be able
      * to optimize this method by doing server-side copies. <p>
      *
      * This implementation just invokes <code>appendMessages()</code>
@@ -1219,7 +1188,7 @@ public abstract class Folder {
     public abstract Message[] expunge() throws MessagingException;
 
     /**
-     * Search this Folder for messages matching the specified
+     * Search this GmailFolder for messages matching the specified
      * search criterion. Returns an array containing the matching
      * messages . Returns an empty array if no matches were found. <p>
      *
@@ -1314,7 +1283,7 @@ public abstract class Folder {
     private volatile Vector connectionListeners = null;
 
     /**
-     * Add a listener for Connection events on this Folder. <p>
+     * Add a listener for Connection events on this GmailFolder. <p>
      *
      * The implementation provided here adds this listener
      * to an internal list of ConnectionListeners.
@@ -1345,7 +1314,7 @@ public abstract class Folder {
     }
 
     /**
-     * Notify all ConnectionListeners. Folder implementations are
+     * Notify all ConnectionListeners. GmailFolder implementations are
      * expected to use this method to broadcast connection events. <p>
      *
      * The provided implementation queues the event into
@@ -1381,12 +1350,12 @@ public abstract class Folder {
     private volatile Vector folderListeners = null;
 
     /**
-     * Add a listener for Folder events on this Folder. <p>
+     * Add a listener for GmailFolder events on this GmailFolder. <p>
      *
      * The implementation provided here adds this listener
      * to an internal list of FolderListeners.
      *
-     * @param l 	the Listener for Folder events
+     * @param l 	the Listener for GmailFolder events
      * @see		javax.mail.event.FolderEvent
      */
     public synchronized void addFolderListener(FolderListener l) { 
@@ -1396,7 +1365,7 @@ public abstract class Folder {
     }
 
     /**
-     * Remove a Folder event listener. <p>
+     * Remove a GmailFolder event listener. <p>
      *
      * The implementation provided here removes this listener
      * from the internal list of FolderListeners.
@@ -1410,9 +1379,9 @@ public abstract class Folder {
     }
 
     /**
-     * Notify all FolderListeners registered on this Folder and
-     * this folder's Store. Folder implementations are expected
-     * to use this method to broadcast Folder events. <p>
+     * Notify all FolderListeners registered on this GmailFolder and
+     * this folder's Store. GmailFolder implementations are expected
+     * to use this method to broadcast GmailFolder events. <p>
      *
      * The implementation provided here queues the event into
      * an internal event queue. An event dispatcher thread dequeues
@@ -1433,10 +1402,10 @@ public abstract class Folder {
     }
 
     /**
-     * Notify all FolderListeners registered on this Folder and
+     * Notify all FolderListeners registered on this GmailFolder and
      * this folder's Store about the renaming of this folder.
-     * Folder implementations are expected to use this method to
-     * broadcast Folder events indicating the renaming of folders. <p>
+     * GmailFolder implementations are expected to use this method to
+     * broadcast GmailFolder events indicating the renaming of folders. <p>
      *
      * The implementation provided here queues the event into
      * an internal event queue. An event dispatcher thread dequeues
@@ -1445,7 +1414,7 @@ public abstract class Folder {
      * also invokes <code>notifyFolderRenamedListeners</code> on this 
      * folder's Store to notify any FolderListeners registered on the store.
      *
-     * @param	folder	Folder representing the new name.
+     * @param	folder	GmailFolder representing the new name.
      * @see		#notifyFolderListeners
      * @since		JavaMail 1.1
      */
@@ -1462,7 +1431,7 @@ public abstract class Folder {
     private volatile Vector messageCountListeners = null;
 
     /**
-     * Add a listener for MessageCount events on this Folder. <p>
+     * Add a listener for MessageCount events on this GmailFolder. <p>
      *
      * The implementation provided here adds this listener
      * to an internal list of MessageCountListeners.
@@ -1493,7 +1462,7 @@ public abstract class Folder {
 
     /**
      * Notify all MessageCountListeners about the addition of messages
-     * into this folder. Folder implementations are expected to use this 
+     * into this folder. GmailFolder implementations are expected to use this 
      * method to broadcast MessageCount events for indicating arrival of
      * new messages. <p>
      *
@@ -1518,7 +1487,7 @@ public abstract class Folder {
 
     /**
      * Notify all MessageCountListeners about the removal of messages
-     * from this Folder. Folder implementations are expected to use this 
+     * from this GmailFolder. GmailFolder implementations are expected to use this 
      * method to broadcast MessageCount events indicating removal of
      * messages. <p>
      *
@@ -1545,7 +1514,7 @@ public abstract class Folder {
     private volatile Vector messageChangedListeners = null;
 
     /**
-     * Add a listener for MessageChanged events on this Folder. <p>
+     * Add a listener for MessageChanged events on this GmailFolder. <p>
      *
      * The implementation provided here adds this listener
      * to an internal list of MessageChangedListeners.
@@ -1576,7 +1545,7 @@ public abstract class Folder {
     }
 
     /**
-     * Notify all MessageChangedListeners. Folder implementations are
+     * Notify all MessageChangedListeners. GmailFolder implementations are
      * expected to use this method to broadcast MessageChanged events. <p>
      *
      * The provided implementation queues the event into
@@ -1660,7 +1629,7 @@ public abstract class Folder {
 
     /**
      * override the default toString(), it will return the String
-     * from Folder.getFullName() or if that is null, it will use
+     * from GmailFolder.getFullName() or if that is null, it will use
      * the default toString() behavior.
      */
 

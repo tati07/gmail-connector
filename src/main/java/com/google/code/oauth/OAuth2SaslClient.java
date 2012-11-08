@@ -1,22 +1,15 @@
-/* Copyright 2012 Google Inc.
+/**
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) MuleSoft, Inc.  All rights reserved.  http://www.mulesoft.com
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.txt file.
  */
 
 package com.google.code.oauth;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -30,8 +23,6 @@ import javax.security.sasl.SaslException;
  * An OAuth2 implementation of SaslClient.
  */
 class OAuth2SaslClient implements SaslClient {
-  private static final Logger logger =
-      Logger.getLogger(OAuth2SaslClient.class.getName());
 
   private final String oauthToken;
   private final CallbackHandler callbackHandler;
@@ -42,8 +33,7 @@ class OAuth2SaslClient implements SaslClient {
    * Creates a new instance of the OAuth2SaslClient. This will ordinarily only
    * be called from OAuth2SaslClientFactory.
    */
-  public OAuth2SaslClient(String oauthToken,
-                          CallbackHandler callbackHandler) {
+  public OAuth2SaslClient(String oauthToken, CallbackHandler callbackHandler) {
     this.oauthToken = oauthToken;
     this.callbackHandler = callbackHandler;
   }
@@ -73,8 +63,7 @@ class OAuth2SaslClient implements SaslClient {
     }
     String email = nameCallback.getName();
 
-    byte[] response = String.format("user=%s\1auth=Bearer %s\1\1", email,
-                                    oauthToken).getBytes();
+    byte[] response = String.format("user=%s\1auth=Bearer %s\1\1", email, oauthToken).getBytes();
     isComplete = true;
     return response;
   }

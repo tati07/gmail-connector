@@ -1,41 +1,10 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+/**
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) MuleSoft, Inc.  All rights reserved.  http://www.mulesoft.com
  *
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License.  You can
- * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
- * or packager/legal/LICENSE.txt.  See the License for the specific
- * language governing permissions and limitations under the License.
- *
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at packager/legal/LICENSE.txt.
- *
- * GPL Classpath Exception:
- * Oracle designates this particular file as subject to the "Classpath"
- * exception as provided by Oracle in the GPL Version 2 section of the License
- * file that accompanied this code.
- *
- * Modifications:
- * If applicable, add the following below the License Header, with the fields
- * enclosed by brackets [] replaced by your own identifying information:
- * "Portions Copyright [year] [name of copyright owner]"
- *
- * Contributor(s):
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.txt file.
  */
 
 package com.google.code.javax.mail;
@@ -77,39 +46,39 @@ public abstract class Store extends Service {
     }
 
     /**
-     * Returns a Folder object that represents the 'root' of
+     * Returns a GmailFolder object that represents the 'root' of
      * the default namespace presented to the user by the Store.
      *
-     * @return the root Folder
+     * @return the root GmailFolder
      * @exception IllegalStateException if this Store is not connected.
      */
     public abstract Folder getDefaultFolder() throws MessagingException;
 
     /**
-     * Return the Folder object corresponding to the given name. Note
-     * that a Folder object is returned even if the named folder does
+     * Return the GmailFolder object corresponding to the given name. Note
+     * that a GmailFolder object is returned even if the named folder does
      * not physically exist on the Store. The <code>exists()</code> 
      * method on the folder object indicates whether this folder really
      * exists. <p>
      *
-     * Folder objects are not cached by the Store, so invoking this
+     * GmailFolder objects are not cached by the Store, so invoking this
      * method on the same name multiple times will return that many
-     * distinct Folder objects.
+     * distinct GmailFolder objects.
      *
-     * @param name 	The name of the Folder. In some Stores, name can
+     * @param name 	The name of the GmailFolder. In some Stores, name can
      *			be an absolute path if it starts with the
      *			hierarchy delimiter. Else it is interpreted
      *			relative to the 'root' of this namespace.
-     * @return		Folder object
+     * @return		GmailFolder object
      * @exception 	IllegalStateException if this Store is not connected.
-     * @see 		Folder#exists
-     * @see		Folder#create
+     * @see 		GmailFolder#exists
+     * @see		GmailFolder#create
      */
     public abstract Folder getFolder(String name)
 			throws MessagingException;
 
     /**
-     * Return a closed Folder object, corresponding to the given 
+     * Return a closed GmailFolder object, corresponding to the given 
      * URLName. The store specified in the given URLName should
      * refer to this Store object. <p>
      *
@@ -120,7 +89,7 @@ public abstract class Store extends Service {
      * @param url	URLName that denotes a folder
      * @see 		URLName
      * @exception 	IllegalStateException if this Store is not connected.
-     * @return		Folder object
+     * @return		GmailFolder object
      */
     public abstract Folder getFolder(URLName url)
 			throws MessagingException;
@@ -140,7 +109,7 @@ public abstract class Store extends Service {
      * Subclasses should override this method to return appropriate information.
      *
      * @exception 	IllegalStateException if this Store is not connected.
-     * @return		array of Folder objects
+     * @return		array of GmailFolder objects
      * @since		JavaMail 1.2
      */
     public Folder[] getPersonalNamespaces() throws MessagingException {
@@ -160,7 +129,7 @@ public abstract class Store extends Service {
      * override this method to return appropriate information.
      *
      * @exception 	IllegalStateException if this Store is not connected.
-     * @return		array of Folder objects
+     * @return		array of GmailFolder objects
      * @since		JavaMail 1.2
      */
     public Folder[] getUserNamespaces(String user)
@@ -178,7 +147,7 @@ public abstract class Store extends Service {
      * override this method to return appropriate information.
      *
      * @exception 	IllegalStateException if this Store is not connected.
-     * @return		array of Folder objects
+     * @return		array of GmailFolder objects
      * @since		JavaMail 1.2
      */
     public Folder[] getSharedNamespaces() throws MessagingException {
@@ -239,15 +208,15 @@ public abstract class Store extends Service {
     private volatile Vector folderListeners = null;
 
     /**
-     * Add a listener for Folder events on any Folder object 
+     * Add a listener for GmailFolder events on any GmailFolder object 
      * obtained from this Store. FolderEvents are delivered to
-     * FolderListeners on the affected Folder as well as to 
+     * FolderListeners on the affected GmailFolder as well as to 
      * FolderListeners on the containing Store. <p>
      *
      * The default implementation provided here adds this listener
      * to an internal list of FolderListeners.
      *
-     * @param l         the Listener for Folder events
+     * @param l         the Listener for GmailFolder events
      * @see             javax.mail.event.FolderEvent
      */
     public synchronized void addFolderListener(FolderListener l) {
@@ -257,7 +226,7 @@ public abstract class Store extends Service {
     }
 
     /**
-     * Remove a listener for Folder events. <p>
+     * Remove a listener for GmailFolder events. <p>
      *
      * The default implementation provided here removes this listener
      * from the internal list of FolderListeners.
@@ -272,7 +241,7 @@ public abstract class Store extends Service {
 
     /**
      * Notify all FolderListeners. Store implementations are
-     * expected to use this method to broadcast Folder events. <p>
+     * expected to use this method to broadcast GmailFolder events. <p>
      *
      * The provided default implementation queues the event into
      * an internal event queue. An event dispatcher thread dequeues
@@ -281,7 +250,7 @@ public abstract class Store extends Service {
      * in a separate thread, thus avoiding potential deadlock problems.
      *
      * @param	type	type of FolderEvent
-     * @param	folder	affected Folder
+     * @param	folder	affected GmailFolder
      * @see		#notifyFolderRenamedListeners
      */
     protected void notifyFolderListeners(int type, Folder folder) {
@@ -295,7 +264,7 @@ public abstract class Store extends Service {
     /**
      * Notify all FolderListeners about the renaming of a folder.
      * Store implementations are expected to use this method to broadcast 
-     * Folder events indicating the renaming of folders. <p>
+     * GmailFolder events indicating the renaming of folders. <p>
      *
      * The provided default implementation queues the event into
      * an internal event queue. An event dispatcher thread dequeues

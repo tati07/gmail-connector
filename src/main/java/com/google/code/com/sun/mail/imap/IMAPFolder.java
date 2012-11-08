@@ -1,41 +1,10 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+/**
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) MuleSoft, Inc.  All rights reserved.  http://www.mulesoft.com
  *
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License.  You can
- * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
- * or packager/legal/LICENSE.txt.  See the License for the specific
- * language governing permissions and limitations under the License.
- *
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at packager/legal/LICENSE.txt.
- *
- * GPL Classpath Exception:
- * Oracle designates this particular file as subject to the "Classpath"
- * exception as provided by Oracle in the GPL Version 2 section of the License
- * file that accompanied this code.
- *
- * Modifications:
- * If applicable, add the following below the License Header, with the fields
- * enclosed by brackets [] replaced by your own identifying information:
- * "Portions Copyright [year] [name of copyright owner]"
- *
- * Contributor(s):
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.txt file.
  */
 
 package com.google.code.com.sun.mail.imap;
@@ -93,7 +62,7 @@ import com.google.code.javax.mail.search.SearchTerm;
  * object. When the folder is opened, it gets its own protocol connection. <p>
  *
  * Applications that need to make use of IMAP-specific features may cast
- * a <code>Folder</code> object to an <code>IMAPFolder</code> object and
+ * a <code>GmailFolder</code> object to an <code>IMAPFolder</code> object and
  * use the methods on this class. The {@link #getQuota getQuota} and
  * {@link #setQuota setQuota} methods support the IMAP QUOTA extension.
  * Refer to <A HREF="http://www.ietf.org/rfc/rfc2087.txt">RFC 2087</A>
@@ -132,7 +101,7 @@ import com.google.code.javax.mail.search.SearchTerm;
  * Thus, the locking hierarchy is that the folder lock, while optional,
  * must be acquired before the messageCacheLock, if it's acquired at
  * all.  Be especially careful of callbacks that occur while holding
- * the messageCacheLock into (e.g.) superclass Folder methods that are
+ * the messageCacheLock into (e.g.) superclass GmailFolder methods that are
  * synchronized.  Note that methods in IMAPMessage will acquire the
  * messageCacheLock without acquiring the folder lock. <p>
  *
@@ -232,7 +201,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
      * messageCacheLock and often the folder lock (see above).
      * While executing the IDLE command we can't hold either
      * of these locks or it would prevent other threads from
-     * entering Folder methods even far enough to check whether
+     * entering GmailFolder methods even far enough to check whether
      * an IDLE command is in progress.  We need to check before
      * issuing another command so that we can abort the IDLE
      * command.
@@ -311,7 +280,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
 
 	/**
 	 * HEADERS is a fetch profile item that can be included in a
-	 * <code>FetchProfile</code> during a fetch request to a Folder.
+	 * <code>FetchProfile</code> during a fetch request to a GmailFolder.
 	 * This item indicates that the headers for messages in the specified 
 	 * range are desired to be prefetched. <p>
 	 * 
@@ -329,7 +298,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
 
 	/**
 	 * SIZE is a fetch profile item that can be included in a
-	 * <code>FetchProfile</code> during a fetch request to a Folder.
+	 * <code>FetchProfile</code> during a fetch request to a GmailFolder.
 	 * This item indicates that the sizes of the messages in the specified 
 	 * range are desired to be prefetched. <p>
 	 *
@@ -361,7 +330,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
 				Boolean isNamespace) {
 	super(store);
 	if (fullName == null)
-	    throw new NullPointerException("Folder name is null");
+	    throw new NullPointerException("GmailFolder name is null");
 	this.fullName = fullName;
 	this.separator = separator;
         debug = store.getSession().getDebug();
@@ -445,7 +414,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
 		throw new IllegalStateException(
 		    "This operation is not allowed on a closed folder"
 	    	);
-	    else // Folder was closed "implicitly"
+	    else // GmailFolder was closed "implicitly"
 		throw new FolderClosedException(this, 
 		    "Lost folder connection to server"
 		);
@@ -505,8 +474,8 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
      * Get the name of this folder.
      */
     public synchronized String getName() {
-	/* Return the last component of this Folder's full name.
-	 * Folder components are delimited by the separator character.
+	/* Return the last component of this GmailFolder's full name.
+	 * GmailFolder components are delimited by the separator character.
 	 */
 	if (name == null) {
 	    try {
@@ -846,7 +815,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
      */
     public synchronized boolean hasNewMessages() throws MessagingException {
 	if (opened) {	// If we are open, we already have this information
-	    // Folder is open, make sure information is up to date
+	    // GmailFolder is open, make sure information is up to date
 	    synchronized(messageCacheLock) {
 		// tickle the folder and store connections.
 		try {
@@ -1319,7 +1288,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
 	    }
 	}
 
-	// Folder is open, we know what the total message count is ..
+	// GmailFolder is open, we know what the total message count is ..
 	synchronized(messageCacheLock) {
 	    // tickle the folder and store connections.
 	    try {
@@ -1368,7 +1337,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
 	    }
 	}
 
-	// Folder is open, we know what the new message count is ..
+	// GmailFolder is open, we know what the new message count is ..
 	synchronized(messageCacheLock) {
 	    // tickle the folder and store connections.
 	    try {
@@ -1875,7 +1844,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
     }
 
     /*
-     * Override Folder method to keep track of whether we have any
+     * Override GmailFolder method to keep track of whether we have any
      * message count listeners.  Normally we won't have any, so we
      * can avoid creating message objects to pass to the notify
      * method.  It's too hard to keep track of when all listeners

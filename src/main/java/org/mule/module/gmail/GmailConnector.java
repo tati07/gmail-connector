@@ -10,69 +10,153 @@
  */
 package org.mule.module.gmail;
 
-import org.mule.api.ConnectionException;
-import org.mule.api.annotations.Connect;
-import org.mule.api.annotations.ConnectionIdentifier;
+import org.apache.commons.lang.StringUtils;
+import org.mule.api.annotations.Configurable;
 import org.mule.api.annotations.Connector;
-import org.mule.api.annotations.Disconnect;
-import org.mule.api.annotations.ValidateConnection;
-import org.mule.api.annotations.param.ConnectionKey;
+import org.mule.api.annotations.lifecycle.Start;
+import org.mule.api.annotations.oauth.OAuth2;
+import org.mule.api.annotations.oauth.OAuthAccessToken;
+import org.mule.api.annotations.oauth.OAuthAccessTokenIdentifier;
+import org.mule.api.annotations.oauth.OAuthAuthorizationParameter;
+import org.mule.api.annotations.oauth.OAuthConsumerKey;
+import org.mule.api.annotations.oauth.OAuthConsumerSecret;
+import org.mule.api.annotations.oauth.OAuthScope;
+import org.mule.api.annotations.param.Default;
+import org.mule.api.annotations.param.Optional;
+import org.mule.modules.google.AccessType;
+import org.mule.modules.google.ForcePrompt;
+import org.mule.modules.google.GoogleUserIdExtractor;
 
+import com.google.code.javax.mail.MessagingException;
 import com.google.code.javax.mail.Store;
+import com.google.code.oauth.OAuth2Authenticator;
 
 /**
- * Cloud Connector
+ * Google Calendars Cloud connector.
+ * This connector covers almost all the Google Calendar API v3 using OAuth2 for authentication.
  *
- * @author MuleSoft, Inc.
+ * @author mariano.gonzalez@mulesoft.com
  */
-@Connector(name="gmail", schemaVersion="1.0-SNAPSHOT")
+@Connector(name="gmail", schemaVersion="1.0", friendlyName="GMail Connector", minMuleVersion="3.3", configElementName="config-with-oauth")
+@OAuth2(
+		authorizationUrl = "https://accounts.google.com/o/oauth2/auth",
+		accessTokenUrl = "https://accounts.google.com/o/oauth2/token",
+		accessTokenRegex="\"access_token\"[ ]*:[ ]*\"([^\\\"]*)\"",
+		expirationRegex="\"expires_in\"[ ]*:[ ]*([\\d]*)",
+		refreshTokenRegex="\"refresh_token\"[ ]*:[ ]*\"([^\\\"]*)\"",
+		authorizationParameters={
+				@OAuthAuthorizationParameter(name="access_type", defaultValue="online", type=AccessType.class, description="Indicates if your application needs to access a Google API when the user is not present at the browser. " + 
+											" Use offline to get a refresh token and use that when the user is not at the browser. Default is online", optional=true),
+				@OAuthAuthorizationParameter(name="force_prompt", defaultValue="auto", type=ForcePrompt.class, description="Indicates if google should remember that an app has been authorized or if each should ask authorization every time. " + 
+											" Use force to request authorization every time or auto to only do it the first time. Default is auto", optional=true)
+		}
+)
 public class GmailConnector extends BaseGmailConnector {
+	
+	private static Boolean providerInited = false;
 
+	/**
+     * The OAuth2 consumer key 
+     */
+    @Configurable
+    @OAuthConsumerKey
+    private String consumerKey;
 
+    /**
+     * The OAuth2 consumer secret 
+     */
+    @Configurable
+    @OAuthConsumerSecret
+    private String consumerSecret;
+    
+    /**
+     * Application name registered on Google API console
+     */
+    @Configurable
+    @Optional
+    @Default("Mule-GmailConnector/1.0")
+    private String applicationName;
+    
+    /**
+     * The OAuth scopes you want to request
+     */
+    @OAuthScope
+    @Configurable
+    @Optional
+    @Default(USER_PROFILE_SCOPE + " https://mail.google.com")
+    private String scope;
+    
+    @OAuthAccessToken
+    private String accessToken;
+    
+    @Start
+    public void init() {
+    	synchronized (providerInited) {
+    		if (!providerInited) {
+    			OAuth2Authenticator.initialize();
+    			providerInited = true;
+    		}
+		}
+    }
+	
 	@Override
-	protected Store getStore() {
-		// TODO Auto-generated method stub
-		return null;
+	protected Store getStore(String username) {
+		String token = this.getAccessToken();
+		
+		if (StringUtils.isEmpty(token)) {
+			throw new IllegalStateException("Cannot connect without an access token");
+		}
+		
+		try {
+			return OAuth2Authenticator.connectToImap(username, token);
+		} catch (MessagingException e) {
+			throw new RuntimeException("There was an unexpected error connecting to the imap store using OAuth2", e);
+		}
 	}
-    /**
-     * Connect
-     *
-     * @param username A username
-     * @param password A password
-     * @throws ConnectionException
-     */
-    @Connect
-    public void connect(@ConnectionKey String username, String password)
-        throws ConnectionException {
-        /*
-         * CODE FOR ESTABLISHING A CONNECTION GOES IN HERE
-         */
+	
+	@OAuthAccessTokenIdentifier
+	public String getAccessTokenId() {
+		return GoogleUserIdExtractor.getUserId(this);
+	}
+	
+    @Override
+    public String getAccessToken() {
+    	return this.accessToken;
     }
 
-    /**
-     * Disconnect
-     */
-    @Disconnect
-    public void disconnect() {
-        /*
-         * CODE FOR CLOSING A CONNECTION GOES IN HERE
-         */
-    }
+	public String getConsumerKey() {
+		return consumerKey;
+	}
 
-    /**
-     * Are we connected
-     */
-    @ValidateConnection
-    public boolean isConnected() {
-        return true;
-    }
+	public void setConsumerKey(String consumerKey) {
+		this.consumerKey = consumerKey;
+	}
 
-    /**
-     * Are we connected
-     */
-    @ConnectionIdentifier
-    public String connectionId() {
-        return "001";
-    }
+	public String getConsumerSecret() {
+		return consumerSecret;
+	}
 
+	public void setConsumerSecret(String consumerSecret) {
+		this.consumerSecret = consumerSecret;
+	}
+
+	public String getApplicationName() {
+		return applicationName;
+	}
+
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
 }

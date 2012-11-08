@@ -1,41 +1,10 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+/**
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) MuleSoft, Inc.  All rights reserved.  http://www.mulesoft.com
  *
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License.  You can
- * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
- * or packager/legal/LICENSE.txt.  See the License for the specific
- * language governing permissions and limitations under the License.
- *
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at packager/legal/LICENSE.txt.
- *
- * GPL Classpath Exception:
- * Oracle designates this particular file as subject to the "Classpath"
- * exception as provided by Oracle in the GPL Version 2 section of the License
- * file that accompanied this code.
- *
- * Modifications:
- * If applicable, add the following below the License Header, with the fields
- * enclosed by brackets [] replaced by your own identifying information:
- * "Portions Copyright [year] [name of copyright owner]"
- *
- * Contributor(s):
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.txt file.
  */
 
 package com.google.code.javax.mail;
@@ -60,7 +29,7 @@ import com.google.code.javax.mail.search.SearchTerm;
  * for the message - i.e., addressing  and descriptive information about 
  * the message. <p>
  *
- * Message objects are obtained either from a Folder or by constructing
+ * Message objects are obtained either from a GmailFolder or by constructing
  * a new Message object of the appropriate subclass. Messages that have
  * been received are normally retrieved from a folder named "INBOX". <p>
  *
@@ -110,8 +79,8 @@ public abstract class Message implements Part {
     protected Message() { }
 
     /**
-     * Constructor that takes a Folder and a message number. 
-     * Used by Folder implementations.
+     * Constructor that takes a GmailFolder and a message number. 
+     * Used by GmailFolder implementations.
      *
      * @param	folder	containing folder
      * @param	msgnum	this message's sequence number within this folder
@@ -582,9 +551,9 @@ public abstract class Message implements Part {
     /**
      * Get the Message number for this Message.
      * A Message object's message number is the relative
-     * position of this Message in its Folder. Note that the message
+     * position of this Message in its GmailFolder. Note that the message
      * number for a particular Message can change during a session
-     * if other messages in the Folder are deleted and expunged. <p>
+     * if other messages in the GmailFolder are deleted and expunged. <p>
      *
      * Valid message numbers start at 1. Messages that do not belong
      * to any folder (like newly composed or derived messages) have 0
@@ -621,16 +590,16 @@ public abstract class Message implements Part {
      * Message object. <p>
      *
      * Messages that are expunged due to an explict <code>expunge()</code>
-     * request on the containing Folder are removed from the Folder 
+     * request on the containing GmailFolder are removed from the GmailFolder 
      * immediately. Messages that are externally expunged by another source
      * are marked "expunged" and return true for the isExpunged() method, 
-     * but they are not removed from the Folder until an explicit 
-     * <code>expunge()</code> is done on the Folder. <p>
+     * but they are not removed from the GmailFolder until an explicit 
+     * <code>expunge()</code> is done on the GmailFolder. <p>
      * 
      * See the description of <code>expunge()</code> for more details on
      * expunge handling.
      *
-     * @see	Folder#expunge
+     * @see	GmailFolder#expunge
      */
     public boolean isExpunged() {
 	return expunged;
