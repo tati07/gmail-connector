@@ -33,6 +33,7 @@ import com.google.code.javax.mail.Address;
 import com.google.code.javax.mail.Flags;
 import com.google.code.javax.mail.Folder;
 import com.google.code.javax.mail.FolderClosedException;
+import com.google.code.javax.mail.HasRawInputStream;
 import com.google.code.javax.mail.IllegalWriteException;
 import com.google.code.javax.mail.Message;
 import com.google.code.javax.mail.MessageRemovedException;
@@ -92,7 +93,7 @@ import com.google.code.javax.mail.util.SharedByteArrayInputStream;
  * @see	javax.mail.internet.InternetAddress
  */
 
-public class MimeMessage extends Message implements MimePart {
+public class MimeMessage extends Message implements MimePart, HasRawInputStream {
 
     /**
      * The DataHandler object representing this Message's content.
@@ -1340,8 +1341,9 @@ public class MimeMessage extends Message implements MimePart {
      * @see	#getContentStream
      * @since	JavaMail 1.2
      */
+    @Override
     public InputStream getRawInputStream() throws MessagingException {
-	return getContentStream();
+    	return getContentStream();
     }
 
     /**                                                            
@@ -2003,13 +2005,13 @@ public class MimeMessage extends Message implements MimePart {
      *
      * @param flag	the flag
      * @return		value of the specified flag for this message
-     * @see 		org.mule.module.gmail.model.mail.Flags.Flag
-     * @see		org.mule.module.gmail.model.mail.Flags.Flag#ANSWERED
-     * @see		org.mule.module.gmail.model.mail.Flags.Flag#DELETED
-     * @see		org.mule.module.gmail.model.mail.Flags.Flag#DRAFT
-     * @see		org.mule.module.gmail.model.mail.Flags.Flag#FLAGGED
-     * @see		org.mule.module.gmail.model.mail.Flags.Flag#RECENT
-     * @see		org.mule.module.gmail.model.mail.Flags.Flag#SEEN
+     * @see 		org.mule.module.gmail.search.mail.Flags.Flag
+     * @see		org.mule.module.gmail.search.mail.Flags.Flag#ANSWERED
+     * @see		org.mule.module.gmail.search.mail.Flags.Flag#DELETED
+     * @see		org.mule.module.gmail.search.mail.Flags.Flag#DRAFT
+     * @see		org.mule.module.gmail.search.mail.Flags.Flag#FLAGGED
+     * @see		org.mule.module.gmail.search.mail.Flags.Flag#RECENT
+     * @see		org.mule.module.gmail.search.mail.Flags.Flag#SEEN
      * @exception       MessagingException
      */
     public synchronized boolean isSet(Flags.Flag flag)

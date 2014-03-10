@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:context="http://www.springframework.org/schema/context" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:gmail="http://www.mulesoft.org/schema/mule/gmail" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/gmail http://www.mulesoft.org/schema/mule/gmail/1.0/mule-gmail.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd 
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd ">
+    <gmail:config-with-oauth name="GMail_Connector" consumerKey="${consumer.key}" consumerSecret="${consumer.secret}" doc:name="GMail Connector">
+        <gmail:oauth-callback-config domain="gmaildemo.cloudhub.io" localPort="${http.port}" path="callback"/>
+    </gmail:config-with-oauth>
+    <context:property-placeholder location="mule.properties"/>
+    <flow name="authorize" doc:name="authorize">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="${http.port}" path="auth" doc:name="HTTP"/>
+        <gmail:authorize config-ref="GMail_Connector" access_type="offline" force_prompt="force" doc:name="authorize"/>
+
+        <gmail:search config-ref="GMail_Connector" username="mariano.gonzalez@mulesource.com" folder="ALL_MAIL" doc:name="search" >
+            <gmail:labels>
+            	<gmail:label>support</gmail:label>
+            </gmail:labels>
+            <gmail:body-terms ref="#[payload]"/>
+            <gmail:flags ref="#[payload]"/>
+            <gmail:from-addresses ref="#[payload]"/>
+            <gmail:header-terms ref="#[payload]"/>
+            <gmail:raw-search-terms ref="#[payload]"/>
+            <gmail:subject-terms ref="#[payload]"/>
+            <gmail:to-addresses ref="#[payload]"/>
+        </gmail:search>
+        <mulexml:object-to-xml-transformer doc:name="Object to XML"/>
+    </flow>
+</mule>

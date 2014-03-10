@@ -6,7 +6,7 @@ This connector will allow you to access your Gmail account vi IMAP using basic a
 Installation and Usage
 ----------------------
 
-For information about usage and installation you can check our documentation at http://mulesoft.github.com/google-calendar-connector/mule/google-calendars-config-with-oauth.html
+For information about usage and installation you can check our documentation at http://mulesoft.github.com/gmail-connector
 
 Reporting Issues
 ----------------

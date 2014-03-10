@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="demo">
+    <global-element type="http://www.mulesoft.org/schema/mule/gmail/config-with-oauth" name="GMail Connector" entity-id="GMail Connector#1">
+        <properties>
+            <property value="GMail_Connector" name="name"/>
+            <property value="1" name="auxiliary;index"/>
+            <property name="applicationName"/>
+            <property value="${consumer.key}" name="consumerKey"/>
+            <property value="${consumer.secret}" name="consumerSecret"/>
+            <property name="scope"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+            <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/oauth-callback-config;0">
+                <property value="callback" name="path"/>
+                <property value="gmaildemo.cloudhub.io" name="domain"/>
+                <property value="${http.port}" name="localPort"/>
+                <property value="2" name="auxiliary;wrapIn"/>
+                <property value="2" name="auxiliary;index"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <global-element type="http://www.springframework.org/schema/context/property-placeholder" name="Property Placeholder" entity-id="Property Placeholder#1">
+        <properties>
+            <property value="mule.properties" name="location"/>
+            <property value="3" name="auxiliary;index"/>
+            <property value="3" name="auxiliary;index"/>
+            <property value="3" name="auxiliary;index"/>
+        </properties>
+    </global-element>
+    <flow SubFlow="false" name="authorize" entity-id="16378440-28f9-4352-9dc0-f0eb78f4ac0a">
+        <properties>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property value="4" name="auxiliary;index"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
+            <property value="4" name="auxiliary;index"/>
+            <property value="4" name="auxiliary;index"/>
+            <property value="4" name="auxiliary;index"/>
+        </properties>
+        <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#1">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="HTTP" entity-id="HTTP#1">
+                <properties>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="request-response" name="exchange-pattern"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property value="http://www.mulesoft.org/schema/mule/http/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property name="httpLabel"/>
+                    <property value="localhost" name="host"/>
+                    <property value="${http.port}" name="port"/>
+                    <property value="auth" name="path"/>
+                    <property name="method"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property name="businessEventsLabel"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property name="address"/>
+                    <property name="encoding"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="mimeType"/>
+                    <property name="responseTimeout"/>
+                    <property name="followRedirects"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property name="connector-ref"/>
+                    <property name="ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property name="user"/>
+                    <property name="password"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property name="contentType"/>
+                    <property name="keep-alive"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property value="5" name="auxiliary;index"/>
+                    <property value="5" name="auxiliary;index"/>
+                </properties>
+            </endpoint>
+            <pattern type="http://www.mulesoft.org/schema/mule/gmail/gmail-connector" name="authorize" entity-id="GMail Connector#2">
+                <properties>
+                    <property value="force" name="force_prompt"/>
+                    <property value="offline" name="access_type"/>
+                    <property value="http://www.mulesoft.org/schema/mule/gmail/authorize" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property value="GMail_Connector" name="config-ref"/>
+                    <property value="6" name="auxiliary;index"/>
+                    <property name="updated"/>
+                </properties>
+                <description></description>
+            </pattern>
+            <pattern type="http://www.mulesoft.org/schema/mule/gmail/gmail-connector" name="search" entity-id="GMail Connector#3">
+                <properties>
+                    <property value="" name="receivedBefore"/>
+                    <property value="" name="threadId"/>
+                    <property value="http://www.mulesoft.org/schema/mule/gmail/search" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property value="" name="sentAfter"/>
+                    <property value="ALL_MAIL" name="folder"/>
+                    <property value="" name="ref"/>
+                    <property value="mariano.gonzalez@mulesource.com" name="username"/>
+                    <property value="" name="sentBefore"/>
+                    <property value="false" name="includeAttachments"/>
+                    <property value="" name="receivedAfter"/>
+                    <property value="" name="messageNumber"/>
+                    <property value="" name="dateFormat"/>
+                    <property value="false" name="expunge"/>
+                    <property value="" name="messageId"/>
+                    <property value="GMail_Connector" name="config-ref"/>
+                    <property value="7" name="auxiliary;index"/>
+                    <property name="updated"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/search-body-termss;1">
+                        <property value="#[payload]" name="ref"/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/search-flagss;1">
+                        <property value="#[payload]" name="ref"/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/search-from-addressess;1">
+                        <property value="#[payload]" name="ref"/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/search-header-termss;1">
+                        <property value="#[payload]" name="ref"/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/search-labelss;1">
+                        <property value="8" name="auxiliary;index"/>
+                        <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/search-labels;1">
+                            <property value="support" name="value"/>
+                            <property value="9" name="auxiliary;wrapIn"/>
+                            <property value="9" name="auxiliary;index"/>
+                        </property-collection>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/search-raw-search-termss;1">
+                        <property value="#[payload]" name="ref"/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/search-subject-termss;1">
+                        <property value="#[payload]" name="ref"/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/search-to-addressess;1">
+                        <property value="#[payload]" name="ref"/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/gmail/size;1258953485">
+                        <property value="" name="ref"/>
+                    </property-collection>
+                </properties>
+                <description></description>
+            </pattern>
+            <pattern type="org.mule.tooling.ui.modules.core.pattern.objectToXmlTransformer" name="Object to XML" entity-id="Object to XML#1">
+                <properties>
+                    <property name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property name="encoding"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property name="mimeType"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property name="driverClass"/>
+                    <property name="acceptMuleMessage"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
+                </properties>
+            </pattern>
+        </lane>
+    </flow>
+    <description></description>
+</mule-configuration>

@@ -45,7 +45,7 @@ import java.util.Vector;
  *
  * </pre></blockquote><p>
  *
- * @see javax.GmailFolder.Folder#fetch
+ * @see org.mule.module.gmail.search.GmailFolder.Folder#fetch
  * @author John Mani
  * @author Bill Shannon
  */

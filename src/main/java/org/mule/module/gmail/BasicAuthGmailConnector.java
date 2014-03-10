@@ -9,68 +9,65 @@
 
 package org.mule.module.gmail;
 
+import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
+import org.mule.api.annotations.Module;
+import org.mule.api.annotations.lifecycle.Start;
+
+import com.google.code.javax.mail.MessagingException;
+import com.google.code.javax.mail.NoSuchProviderException;
+import com.google.code.javax.mail.Session;
 import com.google.code.javax.mail.Store;
 
 /**
- * 
+ *
+ * Gmail cloud connector.
+ * This connector covers the standard IMAP protocol plus Google's extensions for Gmail.
+ * This implementation uses basic authentication
+
  * @author mariano.gonzalez@mulesoft.com
  *
  */
+@Module(name="gmail", schemaVersion="1.0", friendlyName="GMail Connector", minMuleVersion="3.3")
 public class BasicAuthGmailConnector extends BaseGmailConnector {
 	
-	@Override
-	protected Store getStore(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public String getAccessToken() {
-		// TODO Auto-generated method stub
-		return null;
+	private Properties props;
+	
+	@Start
+	public void init() {
+		this.props = System.getProperties();
+		this.props.setProperty("mail.store.protocol", "imaps");
 	}
 	
+	@Override
+	protected Store getStore(String username, String password) throws MessagingException {
+		
+		if (StringUtils.isBlank(password)) {
+			throw new IllegalArgumentException("password cannot be blank");
+		}
+		
+		Session session = Session.getDefaultInstance(props, null);
+		Store store = null;
+		
+		try {
+			store = session.getStore("imaps");
+		} catch (NoSuchProviderException e) {
+			throw new RuntimeException("Could not find imaps provider", e);
+		}
+		
+		store.connect("imap.gmail.com", username, password);
+		return store;
+	}
+
+
 	/**
-     * Connect
-     *
-     * @param username A username
-     * @param password A password
-     * @throws ConnectionException
-     */
-//    @Connect
-//    public void connect(@ConnectionKey String username, String password)
-//        throws ConnectionException {
-        /*
-         * CODE FOR ESTABLISHING A CONNECTION GOES IN HERE
-         */
-//    }
-
-    /**
-     * Disconnect
-     */
-//    @Disconnect
-    public void disconnect() {
-        /*
-         * CODE FOR CLOSING A CONNECTION GOES IN HERE
-         */
-    }
-
-    /**
-     * Are we connected
-     */
-//    @ValidateConnection
-    public boolean isConnected() {
-        return true;
-    }
-
-    /**
-     * Are we connected
-     */
-//    @ConnectionIdentifier
-    public String connectionId() {
-        return "001";
-    }
-
-
+	 * Unsupported for this implementation. Do not invoke
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public String getAccessToken() {
+		throw new UnsupportedOperationException();
+	}
+	
 }

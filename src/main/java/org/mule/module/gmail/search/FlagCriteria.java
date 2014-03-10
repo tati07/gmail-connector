@@ -11,7 +11,6 @@ package org.mule.module.gmail.search;
 
 import java.io.Serializable;
 
-import org.mule.module.gmail.model.Flag;
 
 /**
  * 

@@ -1,3 +1,11 @@
-<!-- BEGIN_INCLUDE(gmail:my-processor) -->
-    <gmail:my-processor content="#[map-payload:content]" />
-<!-- END_INCLUDE(gmail:my-processor) -->
+<!-- BEGIN_INCLUDE(gmail:advanced-search) -->
+    <gmail:advanced-search username="me@mulesoft.com" folder="INBOX" searchTerm-ref="#[flowVars['searchTerm']]" config-ref="gmail"/>
+<!-- END_INCLUDE(gmail:advanced-search) -->
+
+<!-- BEGIN_INCLUDE(gmail:search) -->
+    <gmail:search username="me@mulesoft.com" folder="INBOX" config-ref="gmail" />
+<!-- END_INCLUDE(gmail:search) -->
+
+<!-- BEGIN_INCLUDE(gmail:delete) -->
+    <gmail:delete username="me@mulesoft.com" config-ref="gmail" />
+<!-- END_INCLUDE(gmail:delete) -->

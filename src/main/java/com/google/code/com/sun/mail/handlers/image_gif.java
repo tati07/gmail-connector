@@ -95,3 +95,4 @@ public class image_gif implements DataContentHandler {
 	throw new IOException(getDF().getMimeType() + " encoding not supported");
     }
 }
+

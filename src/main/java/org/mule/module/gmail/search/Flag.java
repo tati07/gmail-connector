@@ -7,7 +7,7 @@
  * LICENSE.txt file.
  */
 
-package org.mule.module.gmail.model;
+package org.mule.module.gmail.search;
 
 import com.google.code.javax.mail.Flags;
 

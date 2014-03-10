@@ -32,6 +32,7 @@ import com.google.code.javax.activation.DataSource;
 import com.google.code.javax.activation.FileDataSource;
 import com.google.code.javax.mail.BodyPart;
 import com.google.code.javax.mail.FolderClosedException;
+import com.google.code.javax.mail.HasRawInputStream;
 import com.google.code.javax.mail.IllegalWriteException;
 import com.google.code.javax.mail.Message;
 import com.google.code.javax.mail.MessageRemovedException;
@@ -71,7 +72,7 @@ import com.google.code.javax.mail.Part;
  * @see javax.mail.internet.MimeUtility
  */
 
-public class MimeBodyPart extends BodyPart implements MimePart {
+public class MimeBodyPart extends BodyPart implements MimePart, HasRawInputStream {
 
     // Paranoia:
     // allow this last minute change to be disabled if it causes problems
@@ -584,8 +585,9 @@ public class MimeBodyPart extends BodyPart implements MimePart {
      * @see	#getContentStream
      * @since	JavaMail 1.2
      */
+    @Override
     public InputStream getRawInputStream() throws MessagingException {
-	return getContentStream();
+    	return getContentStream();
     }
 
     /**

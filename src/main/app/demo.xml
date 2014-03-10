@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:gmail="http://www.mulesoft.org/schema/mule/gmail" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd 
+http://www.mulesoft.org/schema/mule/gmail http://www.mulesoft.org/schema/mule/gmail/1.0/mule-gmail.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd ">
+    <gmail:config-with-oauth name="GMail_Connector" consumerKey="${consumer.key}" consumerSecret="${consumer.secret}" doc:name="GMail Connector">
+        <gmail:oauth-callback-config domain="gmaildemo.cloudhub.io" localPort="${http.port}" path="gmail_callback"/>
+    </gmail:config-with-oauth>
+    <data-mapper:config name="dm" transformationGraphPath="dm.grf" doc:name="dm"/>
+    <flow name="authorize" doc:name="authorize">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP" path="authorize"/>
+        <gmail:authorize config-ref="GMail_Connector" access_type="offline" force_prompt="force" doc:name="GMail Connector"/>
+    </flow>
+    <flow name="demoFlow1" doc:name="demoFlow1">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP"/>
+        <gmail:search config-ref="GMail_Connector" username="mariano.gonzalez@mulesource.com" folder="INBOX" doc:name="GMail Connector">
+            <gmail:labels>
+            	<gmail:label>support</gmail:label>
+            </gmail:labels>
+        </gmail:search>
+        <data-mapper:transform config-ref="dm" doc:name="DataMapper"/>
+    </flow>
+</mule>

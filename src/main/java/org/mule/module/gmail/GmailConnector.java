@@ -16,28 +16,31 @@ import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.lifecycle.Start;
 import org.mule.api.annotations.oauth.OAuth2;
 import org.mule.api.annotations.oauth.OAuthAccessToken;
-import org.mule.api.annotations.oauth.OAuthAccessTokenIdentifier;
 import org.mule.api.annotations.oauth.OAuthAuthorizationParameter;
 import org.mule.api.annotations.oauth.OAuthConsumerKey;
 import org.mule.api.annotations.oauth.OAuthConsumerSecret;
+import org.mule.api.annotations.oauth.OAuthPostAuthorization;
 import org.mule.api.annotations.oauth.OAuthScope;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
 import org.mule.modules.google.AccessType;
 import org.mule.modules.google.ForcePrompt;
 import org.mule.modules.google.GoogleUserIdExtractor;
+import org.mule.modules.google.oauth.invalidation.OAuthTokenExpiredException;
 
+import com.google.code.javax.mail.AuthenticationFailedException;
 import com.google.code.javax.mail.MessagingException;
 import com.google.code.javax.mail.Store;
 import com.google.code.oauth.OAuth2Authenticator;
 
 /**
- * Google Calendars Cloud connector.
- * This connector covers almost all the Google Calendar API v3 using OAuth2 for authentication.
+ * Gmail cloud connector.
+ * This connector covers the standard IMAP protocol plus Google's extensions for Gmail.
+ * This implementation uses OAuth2 for authentication
  *
  * @author mariano.gonzalez@mulesoft.com
  */
-@Connector(name="gmail", schemaVersion="1.0", friendlyName="GMail Connector", minMuleVersion="3.3", configElementName="config-with-oauth")
+@Connector(name="gmail", schemaVersion="1.0", friendlyName="GMail Connector (OAuth2)", minMuleVersion="3.4", configElementName="config-with-oauth")
 @OAuth2(
 		authorizationUrl = "https://accounts.google.com/o/oauth2/auth",
 		accessTokenUrl = "https://accounts.google.com/o/oauth2/token",
@@ -83,7 +86,7 @@ public class GmailConnector extends BaseGmailConnector {
     @OAuthScope
     @Configurable
     @Optional
-    @Default(USER_PROFILE_SCOPE + " https://mail.google.com")
+    @Default(USER_PROFILE_SCOPE + " https://mail.google.com/")
     private String scope;
     
     @OAuthAccessToken
@@ -98,9 +101,9 @@ public class GmailConnector extends BaseGmailConnector {
     		}
 		}
     }
-	
+    
 	@Override
-	protected Store getStore(String username) {
+	protected Store getStore(String username, String password) throws MessagingException {
 		String token = this.getAccessToken();
 		
 		if (StringUtils.isEmpty(token)) {
@@ -109,14 +112,16 @@ public class GmailConnector extends BaseGmailConnector {
 		
 		try {
 			return OAuth2Authenticator.connectToImap(username, token);
+		} catch (AuthenticationFailedException e) {
+			throw new OAuthTokenExpiredException("Authentication failed", e);
 		} catch (MessagingException e) {
 			throw new RuntimeException("There was an unexpected error connecting to the imap store using OAuth2", e);
 		}
 	}
 	
-	@OAuthAccessTokenIdentifier
-	public String getAccessTokenId() {
-		return GoogleUserIdExtractor.getUserId(this);
+	@OAuthPostAuthorization
+	public void postAuth() {
+		GoogleUserIdExtractor.fetchAndPublishAsFlowVar(this);
 	}
 	
     @Override
@@ -159,4 +164,5 @@ public class GmailConnector extends BaseGmailConnector {
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
+
 }

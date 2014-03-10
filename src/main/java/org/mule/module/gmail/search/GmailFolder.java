@@ -7,7 +7,7 @@
  * LICENSE.txt file.
  */
 
-package org.mule.module.gmail.model;
+package org.mule.module.gmail.search;
 
 /**
  * 
